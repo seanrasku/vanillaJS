@@ -54,43 +54,95 @@
           vanilla JavaScript works, we are going to talk about one that ties a
           lot of past concepts together. Promises are an extremely important
           part of ES6, and are widely used now over past methods like the
-          regular async callback functions we discussed in section 4. Let's get
-          into that first, and then we'll tie in async/await after.
+          regular callback functions we discussed in section 4. Let's get into
+          that first, and then we'll tie in async/await after.
         </p>
         <h2>Promises</h2>
         <p class="text">
           Promises are a form of asynchronous programming. They are very similar
           to callback functions, but have a few key differences. The first is
           that promises are <strong>returned objects</strong> while callbacks
-          are just regular functions. Callback functions suffer from an issue
-          known as <em>callback hell</em>, and this is what promises are there
-          for. The issue with callback functions is in the event that we have a
-          large complex problem, we may need many callback functions, and this
-          creates a nested nightmare like the one we saw in section 4. Since
+          are just regular functions. The issue with callback functions is in
+          the event that we have a large complex problem, we may need many
+          callback functions, and this creates <em>callback hell</em>. Since
           promises are a returned object, they can take in parameters, and this
           helps, because we can pass in callback functions as those parameters.
-          Therefore, the convoluted mess we saw in section 4 can be rewritten to
-          look like this:
+          Therefore, the nested functions we saw in section 4 can be rewritten
+          to look like this:
         </p>
         <pre>
-  <code class="text">
+  <code class="code">
+      function addMilk(smoothie, milkType) {
+        smoothie.milk = milkType;
+        return smoothie;
+      }
+      function addFruits(smoothie, fruit1, fruit2) {
+        smoothie.fruit1 = fruit1;
+        smoothie.fruit2 = fruit2;
+        return smoothie;
+      }
+      function blend(smoothie) {
+        smoothie.blendedSmoothie = smoothie.fruit1 + " " + smoothie.fruit2;
+        return smoothie;
+      }
+      function makeSmoothie() {
+          let promise = new Promise((resolve, reject) => {
+              resolve({milk: undefined, fruit1: undefined, fruit2: undefined, blendedSmoothie: undefined})
+          })
+          promise
+          .then((raw) => addMilk(raw, "Almond"))
+          .then((withMilk) => addFruits(withMilk, "Banana", "Strawberry"))
+          .then((unblended) => blend(unblended))
+          .then((blended) => console.log(`Final Smoothie: ${blended.blendedSmoothie}`))
+          .catch((err) => console.error(err));
+      }
     Rewrite code here after fixing section 4, cover when to use .then, (thenable vs non-thenable)
   </code>
 </pre>
         <p class="text">
-          After writing that, add a small paragraph describing what the code
-          does
+          As can be seen, the first 3 functions really don't change that much.
+          The only difference is we are removing the callback from the function,
+          because the promise will handle that for us. They are still being
+          treated like callbacks, but the <code>.then</code> function is
+          allowing us to remove the nested style and make it cleaner to look at.
+          This means that while it doesn't look like we are passing a callback
+          function, we actually are. Now that we covered what promises look
+          like, let's do a deep dive into how they work. The definition of a
+          <strong>promise</strong> (from the Mozilla docs) is an object that
+          represents the eventual completion or failure of an asynchronous
+          operation and its returned value. In other words, a promise is holding
+          a value until the function inside it has finished executing, and uses
+          either <code>resolve()</code> or <code>reject()</code> to pass the
+          value or an error to the <code>.this</code> function. A promise is
+          always in one of three states: <em>pending</em>, meaning it is neither
+          fulfilled or rejected, <em>fulfilled</em>, meaning the promise was
+          resolved successfully, or <code>rejected</code>, meaning there is
+          something wrong with the code and the promise returned an error. When
+          the promise changes from <code>pending</code> to another state, it'll
+          either pass the returned value to the <code>.then</code> method or the
+          error will be caught with <code>.catch</code>. If there are more
+          <code>.then</code> methods, the state of the promise is reset to
+          <em>pending</em> and the process starts all over again.
+        </p>
+        <p class="text">
+          Promises are used almost everywhere nowadays. They can be in this
+          format or use the <code>await</code> keyword as discussed below. In
+          general, the most important part of promises you should understand is
+          that promises are holding functions until they complete in the
+          background. If we are passing callbacks and the promise has multiple
+          steps, the we will pass function return values between its
+          <code>.then</code> methods until the promise is resolved completely.
+          That's all for promises, let's move on to async/await now, and see how
+          promises can be shortened and look even cleaner than they do now!
         </p>
         <h2>async/await</h2>
         <p class="text">
           We have already covered async functions extensively, and we are now
           going to cover one last bit of important information, and that is the
           <code>await</code> keyword. As we know, async functions return a
-          promise,
-          <strong
-            >and we can access the result of that promise using .then()</strong
-          >. The <code>await</code> keyword is a shortcut for all of this. If we
-          have the promise declared above, instead of using
+          promise,and we can access the result of that promise using
+          <code>.then</code>. The <code>await</code> keyword is a shortcut for
+          all of this. If we have the promise declared above, instead of using
           <code>.then(...)</code>, we can just use <code>await promise</code>,
           and it does the same thing! The <code>await</code> keyword is making
           JavaScript wait until the promise is resolved, and then will return
@@ -118,17 +170,18 @@ Now, if we use the <code>await</code> keyword with axios:
           work with promises. It also must be used inside a module. It cannot be
           used globally, since JavaScript is synchronous. The last thing I want
           to cover about the <code>await</code> keyword is that it accepts
-          "thenables", which we covered above. If <code>await</code> receives a
-          non-promise object that has the <code>.then</code> method on it,
-          <code>await</code> will call the method using <code>resolve</code> and
-          <code>reject</code> as arguments. Once one of the methods are called,
-          <code>await</code> will take the result and proceed as it normally
-          does. This is important, because it means that <code>await</code> is
-          not just limited to ES6, but can be used with some legacy code as
-          well. There is much more to the await keyword, and I encourage you to
-          look into it by going through the references section. That's all for
-          this section, I hope you learned a lot, let's move on to the last
-          section!
+          "thenables", which is an object with a <code>then()</code> function.
+          This is different, because the object does not need to be a promise.
+          If <code>await</code> receives a non-promise object that has the
+          <code>.then</code> function, <code>await</code> will call the method
+          using <code>resolve</code> and <code>reject</code> as arguments. Once
+          one of the methods are called, <code>await</code> will take the result
+          and proceed as it normally does. This is important, because it means
+          that <code>await</code> is not just limited to ES6, but can be used
+          with some legacy code as well. There is much more to the await
+          keyword, and I encourage you to look into it by going through the
+          references section. That's all for this section, I hope you learned a
+          lot, let's move on to the last section!
         </p>
       </div>
       <div class="page-nav-container">
@@ -156,10 +209,12 @@ Now, if we use the <code>await</code> keyword with axios:
               >Mozilla Docs: Promises</a
             >
           </li>
-          <a href="https://javascript.info/async-await" target="_blank">
-            JavaScript.info: Async/await
-          </a>
-          <li></li>
+
+          <li>
+            <a href="https://javascript.info/async-await" target="_blank">
+              JavaScript.info: Async/await
+            </a>
+          </li>
         </ul>
       </div>
     </footer>
