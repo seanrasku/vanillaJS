@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.http);
+        document.getElementById(index.http).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.http).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>HTTP Requests and the REST API</h1>
+        <h2>Intro</h2>
+        <p class="text">
+          In this section, we will discuss what a REST API is and how we can use
+          HTTP and REST together to send requests. We will then preview
+          different technologies we can use to send HTTP requests in vanilla
+          JavaScript. Let's get into it!
+        </p>
+        <h2>What is REST?</h2>
+        <p class="text">
+          REST is an architectural style that allows for interaction with
+          RESTful web services. REST stands for
+          <strong>RE</strong>presentational <strong>S</strong>tate
+          <strong>T</strong>ransfer, and has certain criteria that APIs need to
+          meet before being considered RESTful. The API must have:
+        </p>
+        <ul class="text">
+          <li style="margin-bottom: 15px">
+            A client-server architecture with requests managed through HTTP
+            (usually, other protocols can be used, but HTTP is most popular).
+            The client and server applications are completely independent, with
+            the server only able to pass HTTP requests to the client and the
+            client only being able to read the URI (uniform resource identifier,
+            a lot of times will just be a URL) of what is requested.
+          </li>
+          <li style="margin-bottom: 15px">
+            Stateless client-server communication, meaning the server completes
+            each client request independently and each request is isolated from
+            other requests.
+          </li>
+          <li style="margin-bottom: 15px">
+            A uniform interface, meaning all API requests for a resource should
+            look the same, no matter where the request comes from. Each piece of
+            data should be mapped to a unique URI, and must contain all
+            information a client might need.
+          </li>
+          <li style="margin-bottom: 15px">
+            A layered system, with servers with different purposes grouped
+            together to maximize efficiency. The client is unaware of the
+            layered system.
+          </li>
+          <li style="margin-bottom: 15px">
+            The ability for the client to cache responses that will be reused
+            multiple times to improve server efficiency.
+          </li>
+          <li style="margin-bottom: 15px">
+            Optional code-on-demand, where servers can extend client
+            functionality by sending executable code through HTTP when
+            requested.
+          </li>
+        </ul>
+        <p class="text">
+          A Restful API will have a client request and a server response. The
+          client request has many parts to it, but we will focus on the most
+          popular methods, known as the CRUD (Create, Read, Update, Delete)
+          methods. These 4 methods are
+          <em>Get</em> (Read), <em>Post</em> (Create), <em>Put</em> (Update),
+          and <em>Delete</em> (Delete). Let's go over each of those now:
+        </p>
+        <h3 style="font-style: italic">Get</h3>
+        <p class="text">
+          GET requests are used to retrieve data located on a certain URL.
+          Clients can ask the server to filter the data it sends for certain
+          parameters as well as cache the data if it will be reused multiple
+          times.
+        </p>
+        <h3 style="font-style: italic">Post</h3>
+        <p class="text">
+          POST requests send new data to the server. This request must include a
+          representation of the data being sent so the server can access it and
+          execute on it. Sending a POST request multiple times creates the same
+          resource multiple times.
+        </p>
+        <h3 style="font-style: italic">Put</h3>
+        <p class="text">
+          PUT requests update data already on the server. This could be used to
+          modify the existing email for a user or creating a new password.
+          Sending a PUT request multiple times does not create new instances of
+          the data.
+        </p>
+        <h3 style="font-style: italic">Delete</h3>
+        <p class="text">
+          DELETE requests remove a resource from the server. They must contain
+          proper authentication, and will fail if not supplied.
+        </p>
+        <h2>HTTP and REST</h2>
+        <p class="text">
+          Now that we have talked about REST a bit, we should understand how we
+          can use REST and HTTP requests together. HTTP is a communication
+          protocol while REST is an architectural style. HTTP contains many
+          methods that do not conform to the REST architecture, and using these
+          will turn an API to being non-RESTful. However, by making sure we use
+          the correct methods, we can keep our API stateless and conforming to
+          the REST API. This results in a faster application with more security
+          built in. For an API to remain RESTful, the client request must
+          include a URI, the method for the server to execute on, and HTTP
+          headers to provide information, data, and parameters for the server to
+          work with. The server response must include a status, a message body
+          to display, and headers to provide information back to the client.
+          Without all these components, an API cannot be considered RESTful. The
+          last piece we will discuss are 2 technologies to use for sending HTTP
+          requests to and from the server: <strong>Ajax</strong> and
+          <strong>Axios</strong>.
+        </p>
+        <h2>Ajax and Axios</h2>
+        <p class="text">
+          Ajax is the traditional way to send data over HTTP. It uses the method
+          <code>XMLHTTPRequest()</code> to create a new object, and then
+          operates on that object by passing it the method to send to the server
+          and the url to operate on. It has a few more steps than Axios, and has
+          faded out of style a bit recently, but it is still useful to know how
+          it works since Axios is built on top of it. When
+          <code>axios.get(url, func)</code>
+          is called for example, it is actually using the
+          <code>XMLHTTPRequest()</code> method to send the request, with its own
+          additional functinality built on top. To see more about these
+          technologies, click on the Free Code Camp link below. That's all for
+          this lecture, in the next section we will discuss event handlers and
+          how to use them to improve code readability and efficiency. See you
+          then!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          &larr; Previous Section
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li class="text">
+            <a
+              href="https://www.baeldung.com/cs/rest-vs-http#:~:text=The%20short%20answer%20is%20no,authors%20of%20RFC%20for%20HTTP."
+              target="_blank"
+              >Baeldung: REST vs HTTP</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://aws.amazon.com/what-is/restful-api/"
+              target="_blank"
+              >Amazon: What is a RESTful API?</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://www.redhat.com/en/topics/api/what-is-a-rest-api"
+              target="_blank"
+              >RedHat: What is a REST API?</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://www.freecodecamp.org/news/here-is-the-most-popular-ways-to-make-an-http-request-in-javascript-954ce8c95aaa/"
+              target="_blank"
+              >Free Code Camp: Most Popular Ways to Make an HTTP Request</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

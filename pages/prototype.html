@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link rel="stylesheet" href="../styles/bottom-nav.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.prototype);
+        document.getElementById(index.prototype).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.prototype).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>
+          Prototypes, Inheritance, Encapsulation, and Objects in JavaScript
+        </h1>
+        <h2>Before We Get Started...</h2>
+        <p class="text">
+          In this section, we will do a review of 4 JavaScript concepts that are
+          at the core of JavaScript programming. Objects are the most basic, so
+          we will cover them first. Then, we will look at prototypes, and learn
+          how they play an instrumental part in inheritance. Finally, we will go
+          over encapsulation, which is a critical part of writing secure
+          JavaScript applications, making sure sensitive data is not exposed to
+          the public.
+        </p>
+        <h2>Objects</h2>
+        <p class="text">
+          In JavaScript, every non-primitive is an object. All objects are
+          essentially a collection of related data, and can also contain related
+          functionality. The first object below is an object literal with 4
+          properties and no functionality. The second is a non-literal that
+          invokes the empty constructor.
+        </p>
+
+        <pre>
+  <code class="code">
+    const family = {
+      father: "John", 
+      mother: "Sarah", 
+      son: "Stephen",
+      daughter: "Gia"
+    };
+  </code>
+  <code class="code">
+    const date = new Date();
+  </code> 
+        </pre>
+        <p class="text">
+          Both these statements create objects, but do so in different ways.
+          Looking at the second object, it is created using the
+          <code>new</code> keyword. This means that a <em>constructor</em> was
+          invoked, and we created a class. Classes are very important for both
+          prototypes and inheritance. If you do not know what a class is,
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Classes_in_JavaScript"
+            target="_blank"
+            >click here</a
+          >
+          for a good explanation. In short, classes are <em>templates</em> for
+          objects. They allow us to group related data better than using a
+          conventional object. They are instantiated with a constructor, and
+          contain methods and properties that operate on that class.
+        </p>
+        <h2>Prototypes</h2>
+        <p class="text">
+          Every object has a prototype. But what is a prototype? A prototype is
+          just an object, and every prototype also has its own prototype.
+          JavaScript will keep searching prototype's prototypes until reaching
+          an object where the prototype is null. This creates something known as
+          the <strong>prototype chain</strong>. When an object does not possess
+          a method called on it, its prototype is then searched for that method,
+          and JavaScript continues up the prototype chain until either finding
+          the method or throwing an error. In the case of the object literal
+          <code>family</code>, there are no methods to be called, so every
+          method called on it will be searched for on its prototype. The
+          prototype of an object literal will always be
+          <strong>Object { }</strong>. You can verify this by using the method
+          <code>Object.getPrototypeOf(family)</code>. The prototype of any
+          non-literal object is written as the object<em>.prototype</em>. For
+          <strong>Object</strong>, it is <em>Object.prototype</em>. One method
+          that can be called on any literal or non-literal object is the
+          <code>toString()</code> method. The reason it is available to all
+          objects is because it is part of Object.prototype, and
+          Object.prototype's prototype is null, meaning it is at the end of the
+          prototype chain. When <code>toString()</code> is called on the
+          <code>family</code> object, JavaScript sees that there is no matching
+          method, so it looks at the prototype of <code>family</code>, and finds
+          the method there. For the second object we defined above, it is a
+          non-literal object, so it may have its own prototype, and in this case
+          it does. The prototype of <code>date</code> is the
+          <code>Date.prototype</code> object, and the
+          <code>Date.prototype</code> prototype is
+          <code>Object.prototype</code>. Accessing undefined methods in an
+          object by searching for them in its prototype is the basis of how a
+          concept known as <strong>inheritance</strong> works, which we will go
+          into further detail on next.
+        </p>
+        <h2>Inheritance</h2>
+        <p class="text">
+          Inheritance is one of the most important topics in OOP. It differs a
+          bit between languages, but in JavaScript, it is the process by which
+          an object can obtain methods that are not explicitely declared inside
+          itself. All methods found on the prototype chain above that object are
+          available to that object. Suppose we have this class Animal:
+        </p>
+        <pre>
+  <code class="code">
+    class Animal {
+      constructor(phylum) {
+        this.phylum = phylum;
+      }
+      function getPhylum() {
+        return this.phylum;
+      }
+    }
+  </code>
+  <code class="code">
+    class Mammal extends Animal {
+      constructor(phylum, species) {
+        super(phylum);
+        this.species = species;
+      }
+      function mnemonic() {
+        return `A ${this.species} comes from the Animal Kingdom, ${this.getPhylum()} phylum, and the Mammalia class`;
+      }
+    }
+  </code>
+</pre>
+        <p class="text">
+          As can be seen above, the <code>Mammal</code> class
+          <em>inherits</em> the <code>getPhylum()</code> method from the
+          <code>Animal</code> class by using the <code>extends</code> keyword.
+          That method is not inherently available to the
+          <code>Mammal</code> class, but is accessible through class
+          inheritance. Class inheritance is using prototypes behind the scenes,
+          and if the <code>getPhylum()</code> method did not exist in
+          <code>Animal</code>, an error would be thrown. What's more is that we
+          can add more classes to this (for example, adding a
+          <code>Tiger</code> class that extends <code>Mammal</code>), which is
+          what creates the <em>prototype chain</em>. For the prototype chain to
+          function correctly, a <code>subclass</code> (the class that is
+          inheriting) can only extend a single
+          <strong>parent class/base class</strong> (the class that is being
+          inherited from). This way we have a prototype chain and not a
+          prototype web! As a side note, all classes farther up the chain from a
+          subclass are also parent classes to that subclass, because the
+          subclass is also inheriting from them, although it isn't explicit in
+          the code.
+        </p>
+        <h2>Encapsulation</h2>
+        <p class="text">
+          The last topic I want to cover here is encapsulation. In other OOP
+          languages like Java, you are able to declare a variable as
+          <code>private</code>, which restricts the visibility of that variable
+          to just the class it resides in. However, JavaScript did not have this
+          capability until recently, so we will cover how it is done now and how
+          it was done previously. ES6 introduced classes into JavaScript, and
+          with classes, encapsulation becomes easier. Take a class
+          <strong>Person</strong>:
+        </p>
+        <pre>
+  <code class="code">
+    class Person {
+      constructor(name, dob, ssn) {
+        this.name = name;
+        this.dob = dob;
+        this.ssn = ssn;
+      }
+      //getters and setters
+    }
+    const person = new Person("Sean", "01/01/2000", "000-00-0000");
+  </code>
+</pre>
+        <p class="text">
+          This seems very unsafe. At the moment, all someone needs to do is call
+          <code>console.log(person)</code> and everything is visible. Now look
+          at this:
+        </p>
+        <pre>
+  <code class="code">
+    class Person {
+      constructor(name, dob, ssn) {
+        let _name = name;
+        let _dob = dob;
+        let _ssn = ssn;
+        this.getName = () => _name;
+        this.getDob = () -> _dob;
+        this.getSsn = () -> _ssn;
+        this.setDob = (d) -> _dob = d;
+        this.setSsn = (s) -> _ssn = s;
+      }
+    }
+    let person = new Person("Sean", "01/01/2000", "000-00-0000");
+  </code>
+        </pre>
+        <p class="text">
+          Now, this seems much more secure. We are never using the
+          <code>this</code> keyword on the values. Instead, we add functions as
+          properties, masking the values of the inputs and making it so the
+          class itself never actually registers the values going into the
+          constructor. To update the DOB for example, we would write
+          <code>person.setDob("03/23/1995")</code>. If we
+          <code>console.log()</code>, we no longer get any data about the
+          person's name, DOB or SSN, which is good, because that should always
+          be kept private. If you want to learn more about how encapsulation was
+          done before ES6 came out, keep reading below, else move onto the next
+          section!
+        </p>
+        <h4>Encapsulation pre-ES6</h4>
+        <p class="text">
+          To achieve encapsulation in JavaScript pre-ES6, a concept known as
+          <strong>closures</strong> was used. A closure is the combination of a
+          function grouped with references to its surrounding state. Using the
+          class above, but in the form of an object, we can see this would
+          immediately be a problem:
+          <code class="code"
+            >const person = {name: "Sean", dob: "01/01/2000", ssn:
+            "000-000-0000}"</code
+          >. Right now, we could just do
+          <code>person.ssn = "111-222-3333"</code>, and now Sean is a whole
+          other person! This is super unsafe, and restricting visibility of
+          sensitive data is a must. Restricting visibility could be done by
+          using a function. All local variables are not accessible from the
+          outside, so we could do something like this:
+        </p>
+        <pre>
+  <code class="code">
+    function person() {
+      var name = "Sean";
+      var dob = "01/01/2000";
+      var ssn = "000-000-0000";
+      //logic for setting and getting
+      return ??????;
+    }
+  </code>
+        </pre>
+        <p class="text">
+          This seems like a good first step, but now how do we retrieve these
+          variables? A return statement can only take a single value, and we
+          need to return 3. This seems like a good place to put an object, but
+          then we're back to step 1, because someone could just call
+          <code>person().ssn = "..."</code> again. This is where closures come
+          in. Look at the difference between the first code example and the one
+          below:
+        </p>
+        <pre>
+  <code class="code">
+    function person() {
+      var name = "Sean";
+      var dob = "01/01/2000";
+      var ssn = "000-000-0000";
+      var updateObj = {
+        getName: function() {
+          return name;
+        }
+        getDOB: function() {
+          return dob;
+        }
+        setDOB: function(newDOB) {
+          dob = newDOB;
+        }
+        getSSN: function() {
+          return ssn;
+        }
+        setSSN: function(newSSN) {
+          ssn = newSSN
+        }
+      }
+      return updateObj;
+    }
+  </code>
+        </pre>
+        <p class="text">
+          The second code example does something a little wonky. It is still
+          returning an object, which we said would be the right way to go, but
+          instead of having fields for name, dob, and ssn, it has fields for
+          setter and getter functions. This seems kind of similar to how ES6
+          implemented class encapsulation, but with a few extra steps involved.
+          Now, data is fully hidden from anybody looking to access it through a
+          <code>console.log()</code>. Since ES6 is what is currently used, this
+          is mostly just for background knowledge, but you may find some corner
+          case where it is better to use closures than class encapsulation. I
+          hope you found this useful, and see you in the next section!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          &larr; Previous Section
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li class="text">
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object-oriented_programming"
+              target="_blank"
+              >Mozilla Docs: OOP</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes"
+              target="_blank"
+              >Mozilla Docs: Prototypes</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://www.scaler.com/topics/javascript/encapsulation-in-javascript/"
+              target="_blank"
+              >Scaler.com: Encapsulation in JavaScript</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+<!-- 
+https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object-oriented_programming
+https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes
+https://www.scaler.com/topics/javascript/encapsulation-in-javascript/
+-->

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const idObject = {
+          async: "4",
+          dom: "1",
+          engine: "3",
+          events: "6",
+          http: "5",
+          index: "0",
+          promises: "7",
+          prototype: "2",
+          test: "8",
+        };
+        const pageObject = {
+          0: {
+            page: "index.html",
+            next: "dom.html",
+            prev: null,
+          },
+          1: {
+            page: "dom.html",
+            next: "prototype.html",
+            prev: "index.html",
+          },
+          2: {
+            page: "prototype.html",
+            next: "engine.html",
+            prev: "dom.html",
+          },
+          3: {
+            page: "engine.html",
+            next: "async_sync.html",
+            prev: "prototype.html",
+          },
+          4: {
+            page: "async_sync.html",
+            next: "http.html",
+            prev: "engine.html",
+          },
+          5: {
+            page: "http.html",
+            next: "events.html",
+            prev: "async_sync.html",
+          },
+          6: {
+            page: "events.html",
+            next: "promises.html",
+            prev: "http.html",
+          },
+          7: {
+            page: "promises.html",
+            next: "test.html",
+            prev: "events.html",
+          },
+          8: {
+            page: "test.html",
+            next: "index.html",
+            prev: "promises.html",
+          },
+        };
+        localStorage.setItem("pageIndex", JSON.stringify(idObject));
+        localStorage.setItem("pageOrder", JSON.stringify(pageObject));
+        localStorage.setItem("currentPage", "0");
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="#">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>What is Vanilla JavaScript?</h1>
+        <h3>and why is it so important to know?</h3>
+        <p class="text">
+          Vanilla JavaScript is the core of many frameworks such as React, React
+          Native, Node, and Angular. All expand upon JavaScript's capabilities
+          to make coding more efficient and easier for the programmer. However,
+          relying solely upon these frameworks and not knowing how the
+          underlying JavaScript works is not a good idea. Any JavaScript
+          developer worth their salt should be able to tell you how event
+          handling works in JavaScript, how HTTP requests are made, and the
+          difference between asynchronous and synchronous code. Using a
+          framework such as React however, allows new developers to skip over
+          essential topics that are at the core of how JavaScript works. I know
+          this because I was one of those developers. When applying to a
+          company, I was asked by a recruiter what my choice of language was,
+          and I answered "React". The recruiter then asked me if I knew any
+          vanilla JavaScript, and I told him I had played around with it. He
+          explained that if I couldn't understand how JavaScript worked in its
+          raw form then he could not consider me for the role because I only
+          understood JavaScript at a high level. To remedy this, I began to
+          learn vanilla JavaScript and developing this website is my final step
+          in becoming proficient in vanilla JavaScript. This website is
+          completely vanilla JavaScript, and will explain vanilla JavaScript
+          from the ground up. So while you learn, I will be reinforcing my
+          knowledge, and we will both be better as a result! As a side note, I
+          will not be focusing on the most basic topics like what a variable is,
+          types in JavaScript, etc. I will instead focus on nuanced and
+          intermediate/advanced topics, such as event handling, asynchronous
+          code, mounting and unmounting, how the JavaScript engine works behind
+          the scenes, and more. I will also not cover basic HTML or CSS. I hope
+          you learn a lot, and be sure to check out my GitHub to see other
+          projects I've built and to see the code behind this website as well!
+        </p>
+        <button id="start" class="start-button" onclick="moveToStart(event)">
+          Let's Get Started!
+        </button>
+        <script>
+          function moveToStart(event) {
+            const order = JSON.parse(localStorage.getItem("pageOrder"));
+
+            const urlGeneric = window.location.href.substring(
+              0,
+              window.location.href.length - order[0].length
+            );
+            const pageTo = order[1];
+            window.location.replace(urlGeneric + pageTo.page);
+          }
+        </script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--Take event handling for example. Using React to update a counter is as
+simple as creating a button and passing a callback function to onClick that will
+update the counter in state. A junior developer who learns JavaScript by
+learning React will look at the React code and take away that they are returning
+a button that is being passed a function and that the button is being displayed
+on the screen. In vanilla JavaScript, there are many more steps. We need to get
+the button from the DOM using a querySelector, add an event listener, and then
+pass our callback function. These details may seem minor, but they are essential
+in understanding how React works the way it does, and how it builds upon the
+basic JavaScript structure to create an improved product. Learning vanilla
+JavaScript first gives a new developer a background that will allow them to
+debug their code faster and more efficiently, give them the understanding
+necessary to be able to explain their code to a senior developer thoroughly and
+in much more detail, and give them a background in HTML and CSS that a React
+developer would not obtain due to React using React Styled Components and JSX.
+-->

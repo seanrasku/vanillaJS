@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/tutorials.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.dom);
+        document.getElementById(index.dom).style.fontWeight = "bold";
+        document.getElementById(index.dom).style.boxShadow =
+          "inset 5px 0px blue";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>JavaScript and The DOM</h1>
+        <h2>Before we begin, what is the DOM?</h2>
+        <p class="text">
+          The DOM, or Document Object Model, is the structure of an HTML page.
+          It is the data representation of the objects that make up the DOM
+          itself. With the DOM, programming languages like CSS and JavaScript
+          can interact with web pages to create dynamic content, which improves
+          user interactivity with the website, making the website more user
+          friendly, and giving the user more reason to stay.
+        </p>
+        <h2>DOM Elements</h2>
+        <p class="text">
+          The DOM always starts with the <code>head</code> and
+          <code>body</code> tags. The <code>head</code> tag is used for data
+          that is not displayed on the website itself. This includes any
+          imports, stylesheets, and metadata. <strong>Metadata</strong> is data
+          about data, such as a description of the webpage, the author, and
+          keywords for search queries. This is also where the
+          <code>title</code> tag goes, which is what will display on the search
+          engine tab. The
+          <code>body</code>
+          tag contains everything that the website will display, including links
+          to other pages, content, buttons, etc. This is where you put most of
+          your HTML, as well as your CSS and JavaScript.
+        </p>
+        <p class="text">
+          When interacting with the DOM, we use CSS and JavaScript, which are
+          the only languages (other than HTML) that can run in the browser
+          without using plugins. To access the DOM, we use JavaScript methods.
+          To retrieve an element from the DOM, we use the
+          <code>document.querySelector()</code> and
+          <code>document.getElementById()</code> methods. The former takes any
+          number of
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors"
+            target="_blank"
+            >CSS selector strings</a
+          >
+          to match to, and returns the first matching element. The latter takes
+          the id attribute of the element you want to fetch. To use these
+          methods however, we need a JavaScript function. If you try to write
+          vanilla JavaScript in a plain HTML document, you will get an error, so
+          how do we get around this? The answer is to use the
+          <code>script</code> tag. By wrapping our vanilla JavaScript code in
+          the <code>script</code> tag, we can write a function in vanilla
+          JavaScript to interact with the DOM using the above methods. If you
+          open your inspection tool, you can see both functions between
+          <code>script</code>
+          tags. By clicking each button, the text inside the box changes, and
+          each button is behaving in a different way based on the script. Try it
+          out, and then read on for an in depth explanation of what's going on.
+        </p>
+        <div class="button-tutorial-container">
+          <button class="button-tutorial-item" onclick="getByQuery()">
+            Modify by Query
+          </button>
+          <script>
+            function getByQuery() {
+              document.querySelector(".text-query").textContent =
+                "Changed by Query!";
+            }
+          </script>
+          <button
+            id="button-id"
+            class="button-tutorial-item"
+            onclick="getById()"
+          >
+            Modify by Id
+          </button>
+          <script>
+            function getById() {
+              document.getElementById("text-id").textContent = "Changed by Id!";
+            }
+          </script>
+          <text id="text-id" class="text-query">Watch What Happens!</text>
+        </div>
+        <p class="text">
+          Inside the <code>script</code> tags, you will see the vanilla
+          JavaScript code that is modifying the <code>text</code> tag in real
+          time. The <code>document.querySelector()</code> method finds the first
+          element that matches the CSS selector, which in this case is looking
+          for a class name. It then uses the <code>textContent</code> property
+          to change what is displayed on the screen inside the
+          <code>text</code> tag. The
+          <code>document.getElementById()</code>
+          method is similar, but is retrieving elements only by id. Your HTML
+          code should never have a duplicate id field, so make sure you are
+          giving each element its own id attribute. On this page, we only
+          covered retrieving elements. However, we can do many other kinds of
+          operations on the DOM, including creating elements, appending new
+          elements to existing elements, changing the style of an element, etc.
+          There is so much to vanilla JavaScript that can be explored, and I
+          encourage you to do a deep dive into the
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Document/"
+            target="_blank"
+            >Mozilla developer documentation</a
+          >
+          to learn as much as you can!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          Previous Section &larr;
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References (these are another page, get real ones)</h3>
+        <ul>
+          <li class="text">
+            <a
+              href="https://www.freecodecamp.org/news/primitive-vs-reference-data-types-in-javascript/#:~:text=When%20you%20declare%20a%20primitive,for%20declaration%20in%20your%20program."
+              target="_blank"
+              >Free Code Camp: Primitives vs References</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://www.freecodecamp.org/news/synchronous-vs-asynchronous-in-javascript/"
+              target="_blank"
+              >Free Code Camp: Synchronous vs Asynchronous</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf"
+              target="_blank"
+              >SessionStack: How Does JavaScript Really Work?</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://javascript.info/garbage-collection#:~:text=The%20garbage%20collector%20takes%20roots,object%20twice%20in%20the%20future."
+              target="_blank"
+              >JavaScript: Garbage Collection</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

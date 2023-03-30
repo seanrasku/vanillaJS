@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="#">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>About me!</h1>
+        <p class="text">
+          Sean Rasku-Casas is a Computer Science Graduate from the University of
+          Massachusetts Boston. He specializes in front end work using React.js,
+          React Native, and Swift. Over 4 years, he has worked on multiple
+          projects, including building a website for matching investors with
+          prospective companies using React.js, Node.js, Express.js, and
+          MongoDB, and creating a password manager using Swift and Apple
+          CryptoKit. Sean has also interned for Nuance Communications, building
+          unit tests using Spring Boot, Mockito, and JUnit. Unit tests are very
+          important, and Sean managed to increase code coverage by over 60%.
+          Recently, Sean has turned his focus to blockchain and learning how to
+          build dApps using Solidity, Ethers.js, and React.js. Sean then plans
+          to use the knowledge he acquires to build and deploy production level
+          applications. Follow him on LinkedIn and check out his GitHub to view
+          some of his past projects and for the code that built this website as
+          well!
+        </p>
+        <div>
+          <a
+            class="link"
+            href="https://www.linkedin.com/in/sean-rasku-casas-13915a134/"
+            target="_blank"
+            >LinkedIn</a
+          >
+          <a class="link" href="https://github.com/seanrasku" target="_blank"
+            >GitHub</a
+          >
+        </div>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+      </div>
+    </div>
+  </body>
+</html>

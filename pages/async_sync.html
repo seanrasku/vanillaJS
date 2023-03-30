@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.async);
+        document.getElementById(index.async).style.fontWeight = "bold";
+        document.getElementById(index.async).style.boxShadow =
+          "inset 5px 0px blue";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>Asynchronous vs Synchronous</h1>
+        <h2>What is Synchronous Code?</h2>
+        <p class="text">
+          Before we start on asynchronous code, we need to understand
+          synchronous code. We covered a basic definition of synchronous code in
+          the <a class="link" href="engine.html">JavaScript Engine</a> section.
+          To reiterate, <em>synchronous</em> code is code that is executed one
+          step at a time. In other words, two non-nested functions cannot be
+          executing simultaneously. An example of synchronous code can be found
+          in the above section, but in general, any JavaScript program you write
+          will be synchronous unless you apply the techniques we will go over in
+          this section. The reasoning behind this is due to the fact that
+          JavaScript is a synchronous language by nature. Next, we will go over
+          why this is, and some new terminology as well.
+        </p>
+        <h2>
+          The JavaScript Engine Continued: Single-Thread Definition and
+          Asynchronous Manipulation
+        </h2>
+        <h3>What Does Single-Threaded Mean?</h3>
+        <p class="text">
+          When we discussed the JavaScript engine, we did not cover terminology
+          related to asynchronous code. Now, we will get into this terminology,
+          starting with threads. JavaScript is a
+          <em>single-threaded</em> language. This means that a single thread is
+          responsible for executing functions and keeping the program running.
+          This also means that 2 functions cannot execute at the same time,
+          since there is only a single thread. The term
+          <em>single-threaded</em> means there is only a single
+          <strong>call stack</strong>, a term which we went over in the previous
+          section. Whatever is on the top of the call stack is what is run next,
+          and until what is on top of the stack has finished running, the
+          application is in a "frozen" state. If we have nested functions in our
+          program, then all the previously called functions are also frozen.
+          This creates a problem though right? If we can only have a single
+          function run at a time, how can we perform a task like fetch data from
+          a database while keeping the UI running? The UI itself is constantly
+          refreshing, and is listening for any changes made by the user. If we
+          send a request to the database, the JavaScript program will make that
+          the priority, and the UI will stop working. For example, if we tried
+          to send data from this website to a PostgreSQL database synchronously,
+          the "Topics" nav button would no longer be clickable. The call stack
+          can't push a new function until the previous one has finished
+          executing, so nothing would work. To solve this issue, we will now
+          look at <strong>asynchronous</strong> code, and how JavaScript gets
+          around the single-threaded conundrum.
+        </p>
+        <h3>
+          Asynchronous Execution: Callback Functions, The Callback Queue, The
+          Event Loop, and More!
+        </h3>
+        <p class="text">
+          Asynchronous code is how JavaScript can execute multiple functions at
+          the same time, and is what keeps user interfaces looking clean and
+          working perfectly. How does it work though? When we talked about the
+          JavaScript Engine, we left out a couple parts. The first is the
+          <em>callback queue</em>. This is where
+          <strong>callback functions</strong> are taken care of. A callback
+          function is a function that is passed as an argument to another
+          function, and is executed once the first function has finished
+          executing. Callback functions are used heavily in promises, which we
+          will talk about later. The reason callbacks are asynchronous is
+          because of how they work. Callbacks are given to a function with the
+          expectation that they will be called later, meaning that they will not
+          "freeze" the UI right away like their synchronous counterparts, since
+          they are not actually being executed, and thus not on the call stack.
+          In the code below, we show synchronous code versus its callback
+          counterpart.
+        </p>
+        <pre class="text">
+          Synchronous:
+          <code class="code">
+            function addMilk(smoothie, milkType) {
+              smoothie.milk = milkType;
+              return smoothie;
+            }
+            function addFruits(smoothie, fruit1, fruit2) {
+              smoothie.fruit1 = fruit1;
+              smoothie.fruit2 = fruit2;
+              return smoothie;
+            }
+            function blend(smoothie) {
+              smoothie.blendedSmoothie = smoothie.fruit1 + " " + smoothie.fruit2;
+              return smoothie;
+            }
+            function makeSmoothie() {
+              let smoothie = {milk: undefined, fruit1: undefined, fruit2: undefined, blendedSmoothie: undefined};
+              smoothie = addMilk("Almond");
+              smoothie = addFruits("Strawberry", "Banana")
+              smoothie = blend(smoothie);
+              console.log(`Final Smoothie: smoothie.blendedSmoothie`);
+            }
+          </code>
+        </pre>
+        <pre class="text">
+          Callbacks:
+          <code class="code">
+            function addMilk(smoothie, milkType, callback) {
+              smoothie.milk = milkType;
+              callback(smoothie);
+            }
+            function addFruits(smoothie, fruit1, fruit2, callback) {
+              smoothie.fruit1 = fruit1;
+              smoothie.fruit2 = fruit2;
+              callback(smoothie);
+            }
+            function blend(smoothie, callback) {
+              smoothie.blendedSmoothie = smoothie.fruit1 + " " + smoothie.fruit2;
+              callback(smoothie)
+            }
+            function makeSmoothie() {
+              addMilk({milk: undefined, fruit1: undefined, fruit2: undefined, blendedSmoothie: undefined}, "Almond", (smoothie) => {
+                addFruits(smoothie, "Banana", "Strawberry", (fruitSmoothie) => {
+                  blend(fruitSmoothie, (blendedSmoothie) => {
+                    console.log(`Final Smoothie: ${blendedSmoothie.blendedSmoothie}`);
+                  })
+                })
+              })
+            }
+          </code>
+        </pre>
+
+        <p class="text">
+          In the code above, we have the same thing happening twice. In both
+          programs we are making a smoothie. The only difference is in how we
+          make it. The first program makes a smoothie sequentially. This means
+          it is executing synchronously. The second way uses callbacks, with
+          each step being passed into another function as an argument. Once the
+          callback functions are called, they are placed in the
+          <strong>callback queue</strong>. The callback queue is placed in a
+          loop along with the call stack and
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API"
+            target="_blank"
+            >browser APIs</a
+          >
+          and when a callback function enters the queue, it will execute once
+          the call stack is fully empty. The loop between the call stack,
+          callback queue, and browser APIs is known as the
+          <strong>Event Loop</strong>, and is extremely important when coding
+          asynchronously in JavaScript. Without it, only synchronous code would
+          be able to be run. In general, callbacks are not really used in
+          practice anymore due to something called <em>callback hell</em>, but
+          are still very important to understand. If you look at the callback
+          code above, you can see how deeply nested it is, and how something
+          like this would be very hard to debug. If we had a large program that
+          needed a much greater amount of callbacks, this could turn really ugly
+          really quick. To solve this, <em>promises</em> were introduced in ES6,
+          and we will go over those in section 7. That's it for this section, I
+          hope you learned a lot about how synchronous and asynchronous code
+          differ. In the next few sections, we will go over areas of JavaScript
+          where it is best to use asynchronous code. We will start with HTTP
+          Requests, then move on to Event Handlers, and finish with Promises and
+          async/await. See you then!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          Previous Section &larr;
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <h3>References</h3>
+      <ul>
+        <li class="text">
+          <a
+            href="https://medium.com/swlh/what-does-it-mean-by-javascript-is-single-threaded-language-f4130645d8a9"
+            target="_blank"
+            >Medium.com: What Does it Mean By JavaScript is a Single Threaded
+            Language?</a
+          >
+        </li>
+        <li class="text">
+          <a
+            href="https://blog.sessionstack.com/how-javascript-works-event-loop-and-the-rise-of-async-programming-5-ways-to-better-coding-with-2f077c4438b5"
+            target="_blank"
+            >SessionStack: How JavaScript Event Loop Works</a
+          >
+        </li>
+        <li class="text">
+          <a
+            href="https://www.freecodecamp.org/news/synchronous-vs-asynchronous-in-javascript/"
+            target="_blank"
+            >Free Code Camp: Synchronous vs Asynchronous
+          </a>
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>

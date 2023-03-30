@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.test);
+        document.getElementById(index.test).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.test).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>Testing in JavaScript</h1>
+        <h2>Intro</h2>
+        <p class="text">
+          In this section, we will cover unit testing, how to write unit tests
+          using the Jest testing library, integration testing, and end to end
+          testing. We will also cover when it is best to use each one. Let's get
+          started!
+        </p>
+        <h2>Unit Testing</h2>
+        <p class="text">
+          First off, we need to define what unit testing is.
+          <strong>Unit testing</strong> is the process of writing test cases for
+          individual components of a product. It separates each component into
+          its own environment by simulating dependencies using a technique
+          called <em>mocking</em>. Mocking is very useful for complex code with
+          a lot of dependencies, because the developer can control the output.
+          If we are unit testing a function <code>foo</code>, and there is
+          another function inside <code>foo</code>, we mock the inner function
+          to output what we want it to output, and see how the rest of
+          <code>foo</code> reacts. If the function we are testing never checks
+          if the inner function returns null, then we could break our code if it
+          did return null. Unit testing and mocking together are extremely
+          important skills in tech today, and are used in almost every project
+          built today. Next, we will go over one of the most popular libraries
+          for writing unit tests in JavaScript, known as <strong>Jest</strong>.
+        </p>
+        <h3>Jest</h3>
+        <p class="text">
+          Jest is a very popular unit testing framework. It is used
+          predominantly for testing React, but can also be used for testing
+          Angular and of course vanilla JavaScript. Although we will be going
+          over Jest here, since it is the most popular, most of these concepts
+          carry over to other testing frameworks as well. When writing unit
+          tests in Jest, we use a concept called <em>matchers</em>. The syntax
+          for a matcher is <code>expect(a).toBe(b)</code> where a and b are
+          exactly equivalent. This matcher is used for primitives, since exact
+          equivalence is easy to adhere to. For non-primitives, including
+          objects, arrays, etc, we use the
+          <code>expect(obj}.toEqual({prop1: val1, prop2: val2})</code> matcher.
+          <code>.toEqual()</code> recursively checks every field of an object or
+          an array to ensure that they are equivalent and the result is correct.
+          If we are trying to check that something is the opposite of the
+          result, we can add <code>.not</code>, making the new matcher
+          <code>expect(a).not.toBe(b)</code>, where if a is equivalent to b, the
+          test case fails. There will be other logic inside the test case other
+          than the matcher of course, including performing mocks, calculating
+          values, pulling data from a database, etc. Below is an example of a
+          test case for values that were pulled from a database. We will go over
+          the terminology after.
+        </p>
+        <pre>
+    <code class="code">
+      test("should output user data", () => {
+        // jest.fn() creates a mock of a getData function 
+        const mockData = jest.fn(() => 
+            {username: "src2012", email: "srasku@email.com", bio: "I like dogs and coding!"}) 
+        const successStatus = updateUser(mockData);
+        expect(successStatus).toBe(true); 
+      })
+    </code>
+        </pre>
+        <p class="text">
+          Above, we can see that a new unit test is created using the keyword
+          <code>test</code>. Then, we give a description of the unit test, and
+          provide an anonymous function that executes the test itself. Inside
+          the function, we come across a function called jest.fn(). This is
+          creating a mock function, which we control the output of. The mockData
+          function is a mock of a function that exists in the actual source code
+          that this pretend test case would be testing. The function we are
+          testing with this test case is called updateUser, which takes in an
+          object with 3 fields and does some logic inside that should return a
+          success status. If it doesn't, we know that something in that function
+          is broken. Say instead of passing in the email value, we passed in
+          <code>undefined</code>. This would create a problem, since every user
+          must have an email associated with their account. The unit test we
+          just wrote helps take care of this issue. Running the unit test would
+          pinpoint exactly where in the code our issue resides and what we need
+          to do to fix it. If we wanted expanded capabilities on our unit test,
+          we could replace the <code>jest.fn()</code> call with
+          <code>jest.spyOn()</code>. Spies are very similar to mocks, but all
+          calls to the spied function are tracked. This makes sure the function
+          has been called the proper amount of times and the function was called
+          with the right arguments. The last thing I want to cover about unit
+          testing and Jest is setup and teardown. Setup is code that is run
+          before each test. This could include starting a server, populating a
+          database with fresh data, or creating an object for the tests to work
+          on. Teardown is the opposite, so depopulating an array, stopping a
+          server, etc. It is important that these are implemented, because else
+          tests will not be working with fresh data, and there is a high
+          likelihood that there will be bugs within the test cases themselves.
+          Setup is done using the <code>beforeEach()</code> function and
+          teardown is done with the <code>afterEach()</code> function. Let's
+          take the above example, and add these methods in.
+        </p>
+        <pre>
+          <code class="code">
+            beforeEach(() => {
+              //create database and add sample data
+            })
+            afterEach(() => {
+              //clear database
+            })
+            test("should output user data", () => {
+              // jest.fn() creates a mock of a getData function 
+              const mockData = jest.fn(() => 
+                  {username: "src2012", email: "srasku@email.com", bio: "I like dogs and coding!"}) 
+              const successStatus = updateUser(mockData);
+              expect(successStatus).toBe(true); 
+            })
+          </code>
+              </pre>
+        <p class="text">
+          We can see that the setup and teardown are pretty simple, they just
+          take an anonymous function and Jest does all the work of running
+          before each test for us. Test cases are a vital part of being an
+          effective developer, and is a skill you will take with you to any job
+          you go to. The most difficult part about unit tests is figuring out
+          all the different corner cases for the function you just built.
+          However, the more you do it, the better you'll get, and practice makes
+          permanent. Next, we will go over integration testing, which expands
+          upon unit tests to ensure components are working together seamlessly.
+        </p>
+        <h2>Integration Tests</h2>
+        <p class="text">
+          While unit tests test individual components separately, integration
+          tests combines different components that depend on each other, and
+          ensure that they work together without error. If in a UI, a table
+          needed to be updated based on what was being displayed on screen, we
+          have a dependency. If both components worked fine on their own, but
+          there were still errors, how would we know that the errors were coming
+          from this dependency? Integration tests are testing the relationship
+          between these different components to ensure that data is being passed
+          correctly between them, and the receiving component is processing it
+          correctly. In the above example, say the display text is being fetched
+          from a server. We'd write a test to ensure that the data coming
+          through is formatted correctly, and a second to ensure the table is
+          getting the data correctly from the text component.
+          <strong>IMPORTANT:</strong> The difference between unit and
+          integration tests is that unit tests are mocking dependencies.
+          Integration tests use the real dependencies to make sure they work in
+          production. Next, we will talk about End to End testing, which is
+          separate from unit testing and integration testing, but is a much more
+          in depth and thorough test process.
+        </p>
+        <h2>End to End Testing</h2>
+        <p class="text">
+          End to end testing is the most in depth of the testing methods we've
+          discussed. It takes integration testing, which still is only working
+          on component dependencies, and expands it to include the entire
+          application. Tests are run to ensure that the application is ready for
+          production 100%, and there will be no bugs with the app once users
+          begin to use it. End to end testing will cover networking, databases,
+          third party integrations, and more. It can take hours to finish in
+          some cases, and can be run automatically or manually depending on
+          which method would be more appropriate for the application being
+          tested. For more information on what end to end testing is and how it
+          works, be sure to check out the resources section at the bottom.
+        </p>
+        <p class="text">
+          This was the last section in my tutorial on the basics of vanilla
+          JavaScript. I hope you learned a lot, and make sure to check out the
+          code on GitHub for an extended look at how this website was built.
+          Also be sure to check out my GitHub to see my past projects, and
+          connect with me on LinkedIn to discuss any questions or to let me know
+          if I made a mistake somewhere. Thanks!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          Previous Section &larr;
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li>
+            <a
+              href="https://www.testim.io/blog/jest-testing-a-helpful-introductory-tutorial/"
+              target="_blank"
+            >
+              Jest Testing: A Helpful, Introductory Tutorial
+            </a>
+          </li>
+          <li>
+            <a href="https://jestjs.io/docs/" target="_blank">
+              Jest Documentation
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.toptal.com/nodejs/nodejs-guide-integration-tests"
+              target="_blank"
+            >
+              A Node.js Guide to Actually Doing Integration Tests
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+<!-- 
+https://www.toptal.com/nodejs/nodejs-guide-integration-tests
+https://smartbear.com/learn/automated-testing/what-is-end-to-end-testing/#:~:text=End%2Dto%2Dend%20testing%20is,like%20from%20start%20to%20finish.
+-->

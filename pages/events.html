@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link rel="stylesheet" href="../styles/tutorials.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("userAuth", "Employee");
+        localStorage.setItem("currentPage", index.events);
+        document.getElementById(index.events).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.events).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>Event Handlers</h1>
+        <h2>Intro</h2>
+        <p class="text">
+          One reason why JavaScript is such a flexible language due to its
+          ability to update and rerender multiple components at the same time.
+          This is done with <strong>Event Handlers</strong>, which signal the UI
+          that something changed in the browser, and it needs to rerender. This
+          is a super important topic in JavaScript, so we will go very in depth
+          on this one! In general, there are 2 ways we can register an event
+          handler. The first is by using the element's <em>onevent</em> property
+          (such as <em>onclick</em>, <em>onfocus</em>, <em>onmousedown</em>, or
+          <em>onsubmit</em>), and the second is by using an event listener. In
+          both cases, the event handler will receive an
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Event"
+            target="_blank"
+            >Event</a
+          >
+          object, and will use methods attached to the object to create
+          something like a button push, toggle, or some other interactive
+          display. The difference between the two ways is that event listeners
+          are much more flexible, and are highly recommended over the onevent
+          property. Event listeners can be added and removed with simple
+          commands, and multiple listeners can be assigned to a single DOM
+          element. Now that we've gotten the intro out of the way, let's talk
+          about the <em>onevent</em> property first, and then get into
+          <em>event listeners </em> after.
+        </p>
+        <h2>Onevent Properties</h2>
+        <p class="text">
+          There are many different onevent properties that we could go through,
+          but we will cover the areas that they all have in common. Onevent
+          properties are a kind of element property, and are specific to that
+          element. An onevent property can be used only once on an element,
+          which is a little disadvantageous, because the whole point of a
+          reactive UI is to be able to have multiple elements reacting to user
+          interaction at the same time. Only allowing a single onevent property
+          will create very messy code in the end, and limits our ability to
+          restructure our code if we want to change the functionality of a
+          different element that depends on the current one. Say for example we
+          wanted to check out on a button push for an ecommerce site. Maybe we
+          also want to display a message saying "Get 50% Off With Another $15.00
+          in Purchases!" We also want to display a "Go Back" button and a
+          countdown that will redirect the user when it hits 0. Using the
+          onevent property, we'd need to keep track of the number of products,
+          get the right element in the DOM, and redirect the user either to the
+          cart or to the products page after the countdown hits 0 all in one
+          event handler, which could get very messy. If we had more than one
+          event handler, we could separate these out and give each one its own
+          responsibility. This also makes bugs easier to find and allows us to
+          expand upon our implementation without having to worry as much about
+          how our code is already structured. We will go into how this is done
+          in the next section. Open up the <em>inspect</em> tool and navigate to
+          the <em>script</em> tag with the code for the
+          <code>Check Out</code> button. Inside is the code using event
+          listeners instead of the onevent property. Let's now dive into why
+          this code is more efficient and cleaner, contrasting it with how an
+          implementation might look for an onevent property.
+        </p>
+        <h2>Event Listeners</h2>
+        <p class="text">
+          Event listeners are much more flexible than onevent properties. They
+          can be added or removed as needed, do not need to be declared in the
+          element itself, and more than one can be added to an element at a
+          time. Event listeners are declared using the
+          <code>addEventListener</code> method. It is called on a DOM element
+          that is retrieved inside a JavaScript function. Below is an example of
+          how event listeners can help clean up our code. It separates out the
+          tasks of a mock checkout system into different handlers, which we
+          could expand upon and use for different buttons later if we wanted to
+          (although we'd need to change how we retrieve the element to using a
+          <code>querySelector</code>, since each element has a unique Id). We
+          could also add in new handlers for new UI and we wouldn't have to
+          search through a giant function to figure out where everything is
+          called. Clearly commented code helps tremendously in this regard, and
+          all we would need to do is create a new query and add a listener where
+          we need to, making sure that it doesn't break any existing listener
+          functionality. Below, we see example code using multiple event
+          listeners on a single button. Let's go through and see how it works!
+        </p>
+        <h3>Example: Check Out</h3>
+        <button id="checkout-button" class="tutorial-event-button">
+          Check Out &rarr;
+        </button>
+        <text id="text-to-reveal" class="reveal-text"
+          >Get 50% Off With Another $15.00 in Purchases!</text
+        >
+        <text id="countdown-timer" class="expired-text"></text>
+        <button id="go-back-button" class="reveal-button">Go Back Now!</button>
+        <script>
+          // Get necessary elements from the DOM, in this case the buttons and text to reveal
+          const button = document.getElementById("checkout-button");
+          const button2 = document.getElementById("go-back-button");
+          const text = document.getElementById("text-to-reveal");
+          let timeoutId;
+
+          // First event listener listens for a user click and sets the
+          // go back button and text displays to visible
+          button.addEventListener("click", setFlex);
+          function setFlex() {
+            button2.style.display = "flex";
+            text.style.display = "flex";
+          }
+          // Next event listener sets a countdown timer for the user to
+          // know how much time they have to decide whether to use the
+          // coupon. On expiration, the timer shows "EXPIRED" and the go
+          // back button and text disappear.
+          button.addEventListener("click", () => {
+            var countDownDate = new Date().getTime();
+            countDownDate = countDownDate - countDownDate + 5;
+            var now = 0;
+            // Update the count down every 1 second
+            var x = setInterval(function () {
+              var seconds = countDownDate - now;
+
+              document.getElementById("countdown-timer").innerHTML =
+                seconds + " seconds until this deal expires! Check Out Now!";
+              console.log(seconds);
+              if (seconds < 1) {
+                clearInterval(x);
+                document.getElementById("countdown-timer").innerHTML =
+                  "EXPIRED: Redirecting now...";
+                setNone();
+              }
+              now += 1;
+            }, 1000);
+          });
+
+          function setNone() {
+            button2.style.display = "none";
+            text.style.display = "none";
+          }
+
+          // Last event listener on the check out button uses the setTimeout
+          // function to set a delay on when the navigation to the checkout
+          // page happens (Just a function that performs a console.log for now)
+          button.addEventListener("click", () => {
+            console.log(
+              "Timeout function executed, 5 seconds until redirection!"
+            );
+            timeoutID = setTimeout(goToCheckout, 5000); //setTimeout delays function execution by the number of ms specified
+          });
+          function goToCheckout() {
+            console.log("Navigated to checkout!");
+          }
+
+          // Event listener on the go back button listens for a click and
+          // "navigates" to the correct page right away. It also needs to cancel
+          // setTimeout function called previously, since it won't be used.
+          button2.addEventListener("click", () => {
+            clearTimeout(timeoutID);
+            console.log("Navigated to product listing!");
+          });
+        </script>
+        <p class="text">
+          As you can see, the implementation coded using event listeners is very
+          clean and concise. We are able to separate out each event listener
+          giving each one its respective responsibility, and if a bug crashes
+          the program, pinpointing the cause will be much quicker. If we had
+          coded it using the onevent property, we would just have one giant
+          function, which would not look clean at all. It might still work for
+          this example, but with something more complex, and especially if we
+          actually implemented routing in our application, it would not be as
+          simple. Event listeners help to simplify coding user interaction with
+          the website, and using them should always be a priority over the
+          onevent property. What's more, if we wanted to remove certain event
+          listeners, we can do this using an Abort Controller, which is
+          explained in detail under the Mozilla Documentation, and I encourage
+          you to take a look at this. In summary, a <code>new</code> controller
+          is instantiated at the top, and a signal parameter is passed in to all
+          event listeners we want to stop at the same time. When we want to
+          abort them, we call the <code>abort()</code> method on the Abort
+          Controller, and they will all abort right away. This is another
+          advantage over the onevent property, as properties need to be removed
+          manually, which is an easy way to make mistakes and is very time
+          consuming. That's it for this section, in the next section we will
+          learn about promises and async/await. See you then!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          &larr; Previous Section
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li class="text">
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Web/Events/Event_handlers"
+              target="_blank"
+              >Mozilla Docs: Event Handlers
+            </a>
+          </li>
+          <li class="text">
+            <a
+              href="https://www.w3schools.com/howto/howto_js_countdown.asp"
+              target="_blank"
+              >W3Schools: Countdown Timer</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+<!-- 
+/*
+              Here lies the crux of the problem. We need a way to hold for a 
+              certain period of time to give the user a chance to click the "Go Back 
+              button", but this requires a lot of logic. We need to call setTimeout()
+              on window.location.replace(url), giving the user around 5 seconds to press the button, 
+              and if they haven't, the user would be redirected to the checkout page. During those 5
+              seconds, we would need to check if the user clicked "Go Back" with a boolean, set the correct url,
+              and update the countdown timer every second. We also need to redirect when the countdown hits 0. 
+              Then, the user would be redirected to the correct page. This would be a lot with just the 
+              onClick handler, so we won't implement it here, but check out how it would be done below with the 
+              .addEventListener() function. The ability to add multiple event listeners to the same UI element 
+              really helps clean up the logic and doesn't restrict our ability to separate the function into smaller steps. 
+            */
+-->

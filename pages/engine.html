@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/tutorials.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.engine);
+        document.getElementById(index.engine).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.engine).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>The JavaScript Engine</h1>
+        <h2>Intro</h2>
+        <p class="text">
+          In this section, we will cover what the JavaScript engine is and how
+          it works behind the scenes to make JavaScript work the way it does. We
+          start with the <em>call stack</em>, then cover the
+          <em>memory heap</em>, and finally, go over how the engine handles
+          <em>garbage collection</em>. Let's get started!
+        </p>
+        <h2>The JavaScript Call Stack</h2>
+        <p class="text">
+          The call stack in JavaScript is something any JavaScript developer
+          should at least be familiar with, and understand how it works at a
+          basic level. The call stack is the data structure behind how a program
+          is executed in JavaScript, organizing the program in the order it is
+          supposed to execute. Say you have this in a JavaScript file:
+        </p>
+        <pre>
+<code class="code">
+  function helloworld() { 
+    console.log("Hello World!"); 
+  } 
+  function hellojs() {
+    const firstname = "Sean";
+    const lastname = "Rasku-Casas";
+    console.log(`My name is ${firstname} ${lastname}!`);
+    helloworld(); 
+  }
+  function main() { 
+    console.log("main()") 
+    hellojs(); 
+  } 
+  main();
+</code>
+        </pre>
+        <p class="text">
+          What will this program output? Click the button below to reveal the
+          answer!
+        </p>
+        <div class="reveal-container">
+          <button class="cover-button" onclick="revealSync1()">
+            Click To Reveal!
+          </button>
+          <pre id="reveal-sync-1" class="reveal-text">
+main()
+My name is Sean Rasku-Casas!
+Hello World!
+          </pre>
+        </div>
+        <script>
+          function revealSync1() {
+            const display =
+              document.getElementById("reveal-sync-1").style.display;
+            if (display == "none") {
+              document.getElementById("reveal-sync-1").style.display = "flex";
+            } else {
+              document.getElementById("reveal-sync-1").style.display = "none";
+            }
+          }
+        </script>
+        <p class="text">
+          In this program, JavaScript will notice a function call at the bottom
+          for <code>main()</code>. It will then place the
+          <code>main()</code> function on the call stack and execute it. Inside
+          <code>main()</code>, the <code>console.log()</code> prints "main()",
+          and the program moves to the next line, where there is a function
+          call. Next, the <code>hellojs()</code> function is placed on the call
+          stack. Inside this function, we see a variable declaration, so it is
+          placed on the call stack. Then, we see another variable declaration,
+          so it is also placed on the call stack. Right now, our stack looks
+          like this (top of the stack being first):
+          <span class="stack">lastname -> firstname -> hellojs() -> main()</span
+          >. The program continues, and finds a
+          <code>console.log()</code> statement. Inside, it needs two values, and
+          searches the call stack to find them. Both values are at the top of
+          the stack, so the statement is executed and the program moves on,
+          finding the <code>helloworld()</code> function on the next line. After
+          placing the function on the stack, we now have the following:
+          <span class="stack">
+            helloworld() -> lastname -> firstname -> hellojs() -> main() </span
+          >. The <code>helloworld()</code> function executes, printing "Hello
+          World!" to the console, and is removed from the stack, leaving
+          <span class="stack"
+            >lastname -> firstname -> hellojs() -> main()</span
+          >
+          on the stack. The <code>hellojs()</code> function has now finished
+          executing, so everything up to and including it is also removed. Now,
+          only the <code>main()</code> function remains on the stack, and since
+          there is nothing left to be executed inside the function, the call
+          stack removes it and the program finishes. This is a high level
+          explanation of how the call stack works. There are many optimizations
+          that can be done to improve the performance of the call stack, and I
+          encourage you to look into this if you are interested.
+        </p>
+        <p class="text">
+          What we just went through is called <strong>synchronous</strong> code.
+          This means that we execute one function at a time, and must wait for
+          that function to finish before executing a second one. In other words,
+          <code>main()</code> cannot finish until all functions inside it have
+          been executed completely. <strong>Asynchronous</strong> code is the
+          opposite, where we can execute multiple functions simultaneously, like
+          fetching data from a database while keeping the UI rendered.
+          JavaScript is synchronous by nature, but can be manipulated to behave
+          asynchronously, and we will discover how this is done later on. The
+          call stack is the backbone of the JavaScript engine, and is
+          instrumental in keeping a program in order, as well as determining
+          where the program is during execution. So far, we have only seen
+          primitives and basic function calls on the call stack, but there is
+          much more that could appear. This is where the JavaScript heap comes
+          in, and we'll get into that next!
+        </p>
+        <h2>The JavaScript Memory Heap</h2>
+        <p class="text">
+          The JavaScript heap is where we keep the program memory. This area is
+          not for keeping track of program execution, but instead is a storage
+          area for <strong>reference types</strong> (types that do not have a
+          fixed size). Function definitions, arrays, and all other objects are
+          reference types. Reference types are given a memory address in the
+          heap, and values are fetched from the heap with that address. If an
+          object is an array, it will need more than one memory address though,
+          because it can keep expanding, and have multiple primitive or
+          non-primitive entries. The heap takes note of the address of the first
+          entry in the array, and future entries are placed next to the previous
+          entry, with the end of the array being the last non-null entry.
+          Imagine now that the program above did not have 2 variables, but
+          instead an object that contained <code>firstname</code> and
+          <code>lastname</code> properties. How can the stack know where in the
+          heap to retrieve the object from? This is where
+          <strong>pointers</strong> come in. Pointers are given the value of the
+          address in memory where the object is located, so when the call stack
+          comes upon that object, it knows exactly where to look. If we had the
+          object
+          <code>const sean = {firstname: "Sean", lastname: "Rasku-Casas"}</code>
+          instead of the variable declarations, we would not see the stack being
+          <span class="stack">lastname -> firstname -> hellojs() -> main()</span
+          >, but instead
+          <span class="stack">sean=0x000000 -> hellojs() -> main()</span>, where
+          the hex is an example memory address. Each property would also have
+          its own address, which would be easily accessible once the call stack
+          knows where the object itself is. The final piece of the JavaScript
+          engine is garbage collection. Let's get into it!
+        </p>
+        <h2>Garbage Collection in JavaScript</h2>
+        <p class="text">
+          Garbage collection is extremely important in any programming language
+          that manages its own memory. In JavaScript, the garbage collection
+          algorithm used is called the
+          <strong>mark-and-sweep</strong> algorithm. This algorithm uses a
+          concept called <em>reachability</em> to figure out what is being used
+          and what can be discarded. The steps of this algorithm are as follows:
+        </p>
+        <ol start="0">
+          <li class="text">
+            First of all, everything currently on the call stack cannot be
+            deleted. All functions, their local variables and parameters, and
+            any global variables are considered <em>reachable</em>, because they
+            are actively being used (or are part of a nested function call). Now
+            the algorithm can really start:
+          </li>
+          <li class="text">
+            Mark the <strong>roots</strong> of the program (Everything in step
+            0).
+          </li>
+          <li class="text">
+            Mark all references from the roots (e.g. what properties, variables,
+            etc. do these objects have?) These references are now also
+            considered reachable.
+          </li>
+          <li class="text">
+            Mark all references' references, and any reference that was already
+            marked will not be marked again.
+          </li>
+          <li class="text">
+            Loop step 3 until there are no more possible objects to be marked.
+          </li>
+          <li class="text">Any object that is not marked is removed.</li>
+        </ol>
+        <p class="text">
+          In addition, anything that is not on the call stack currently is also
+          discarded from memory. The last part of garbage collection we will
+          cover is the concept of <em>incoming</em> vs
+          <em>outgoing</em> references. Incoming references are the only
+          references that will make an object reachable, because that reference
+          is coming from a an object that must also be reachable. Outgoing
+          references only confirm that another object is reachable from the
+          current object that the algorithm is on. Take this as an example:
+        </p>
+        <img
+          src="../img/reference_diagram.png"
+          alt="Diagram showing incoming and outgoing references for a school and its classes"
+          height="500px"
+          width="1000px"
+          style="align-self: center"
+        />
+        <p class="text">
+          Now, looking at this diagram, we see <code>Classes</code> is the root
+          object. <code>Classes</code> contains 2 properties,
+          <code>Math</code> and <code>CS</code>, which are used to group the
+          classes by what they teach. There are also 2 references to the same
+          object: <code>CS220</code>. What do you think happens if we remove the
+          <code>CS</code> property from the <code>Classes</code> object? Both
+          objects will still be there, but only <code>CS220</code> will still be
+          reachable, because it is also in the <code>Math</code> array. By
+          looking at the incoming references, we can tell that
+          <code>CS110</code> will no be longer reachable from any object, but
+          <code>CS220</code> will still have a reference from
+          <code>Classes.Math</code>. Therefore, the garbage collector knows that
+          it can safely remove <code>CS110</code> from memory and nothing will
+          break. That's all for this section, I hope you learned a lot about how
+          the JavaScript engine works behind the scenes. See you in the next
+          section!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          Previous Section &larr;
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li class="text">
+            <a
+              href="https://www.freecodecamp.org/news/primitive-vs-reference-data-types-in-javascript/#:~:text=When%20you%20declare%20a%20primitive,for%20declaration%20in%20your%20program."
+              target="_blank"
+              >Free Code Camp: Primitives vs References</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://www.freecodecamp.org/news/synchronous-vs-asynchronous-in-javascript/"
+              target="_blank"
+              >Free Code Camp: Synchronous vs Asynchronous</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://blog.sessionstack.com/how-does-javascript-actually-work-part-1-b0bacc073cf"
+              target="_blank"
+              >SessionStack: How Does JavaScript Really Work?</a
+            >
+          </li>
+          <li class="text">
+            <a
+              href="https://javascript.info/garbage-collection#:~:text=The%20garbage%20collector%20takes%20roots,object%20twice%20in%20the%20future."
+              target="_blank"
+              >JavaScript: Garbage Collection</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

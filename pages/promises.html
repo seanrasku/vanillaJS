@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../styles/page-styles.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="stylesheet" href="../styles/mini-nav.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <title>Vanilla JavaScript</title>
+    <script>
+      window.onload = () => {
+        document.getElementById("topic-dropdown").style.display = "none";
+        const index = JSON.parse(localStorage.getItem("pageIndex"));
+        localStorage.setItem("currentPage", index.promises);
+        document.getElementById(index.promises).style.boxShadow =
+          "inset 5px 0px blue";
+        document.getElementById(index.promises).style.fontWeight = "bold";
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <div id="header" class="home-container" style="height: 70px">
+        <img
+          src="../img/sean.png"
+          alt="A picture of Sean Rasku-Casas, the creator of this site"
+          height="70px"
+          width="60px"
+        />
+        <h1 class="title">Vanilla JavaScript Explained</h1>
+        <ul class="nav">
+          <li class="navlink"><a href="index.html">Home</a></li>
+          <li class="navlink"><a href="./about.html">About </a></li>
+          <button class="dropdown-button">Topics</button>
+          <script src="../js/dropdown_listener.js"></script>
+
+          <div class="burger">
+            <i class="fas fa-bars"></i>
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div class="content-container">
+      <div id="page-body" class="left-panel">
+        <h1>Promises and async/await</h1>
+        <h2>Intro</h2>
+        <p class="text">
+          We've covered a lot so far, but for our last major concept on how
+          vanilla JavaScript works, we are going to talk about one that ties a
+          lot of past concepts together. Promises are an extremely important
+          part of ES6, and are widely used now over past methods like the
+          regular async callback functions we discussed in section 4. Let's get
+          into that first, and then we'll tie in async/await after.
+        </p>
+        <h2>Promises</h2>
+        <p class="text">
+          Promises are a form of asynchronous programming. They are very similar
+          to callback functions, but have a few key differences. The first is
+          that promises are <strong>returned objects</strong> while callbacks
+          are just regular functions. Callback functions suffer from an issue
+          known as <em>callback hell</em>, and this is what promises are there
+          for. The issue with callback functions is in the event that we have a
+          large complex problem, we may need many callback functions, and this
+          creates a nested nightmare like the one we saw in section 4. Since
+          promises are a returned object, they can take in parameters, and this
+          helps, because we can pass in callback functions as those parameters.
+          Therefore, the convoluted mess we saw in section 4 can be rewritten to
+          look like this:
+        </p>
+        <pre>
+  <code class="text">
+    Rewrite code here after fixing section 4, cover when to use .then, (thenable vs non-thenable)
+  </code>
+</pre>
+        <p class="text">
+          After writing that, add a small paragraph describing what the code
+          does
+        </p>
+        <h2>async/await</h2>
+        <p class="text">
+          We have already covered async functions extensively, and we are now
+          going to cover one last bit of important information, and that is the
+          <code>await</code> keyword. As we know, async functions return a
+          promise,
+          <strong
+            >and we can access the result of that promise using .then()</strong
+          >. The <code>await</code> keyword is a shortcut for all of this. If we
+          have the promise declared above, instead of using
+          <code>.then(...)</code>, we can just use <code>await promise</code>,
+          and it does the same thing! The <code>await</code> keyword is making
+          JavaScript wait until the promise is resolved, and then will return
+          its result, which we can store in a variable and use later. This is
+          especially important in web service calls (like fetch()), and is used
+          widely with JavaScript libraries like Axios. If we did a
+          <code>GET</code> request in axios without using the
+          <code>await</code> keyword, it would look something like this:
+        </p>
+        <pre class="text">
+          <code>const data = axios.get(url).then(...).catch(...); (kind of long)</code>
+
+Now, if we use the <code>await</code> keyword with axios:
+
+          <code>const data = await axios.get(url); (Much shorter, and returns the resolved promise as well)</code>
+        </pre>
+        <p class="text">
+          There are some considerations to take into account however, the first
+          being that you should always have a check after the
+          <code>await</code> keyword to ensure it returned correctly. You can do
+          this using a <code>try catch</code> block. The second is
+          <strong>you can only use this keyword inside async functions</strong>.
+          You will get an error if you try to use it inside a synchronous
+          function, and that is because the entire point of the keyword is to
+          work with promises. It also must be used inside a module. It cannot be
+          used globally, since JavaScript is synchronous. The last thing I want
+          to cover about the <code>await</code> keyword is that it accepts
+          "thenables", which we covered above. If <code>await</code> receives a
+          non-promise object that has the <code>.then</code> method on it,
+          <code>await</code> will call the method using <code>resolve</code> and
+          <code>reject</code> as arguments. Once one of the methods are called,
+          <code>await</code> will take the result and proceed as it normally
+          does. This is important, because it means that <code>await</code> is
+          not just limited to ES6, but can be used with some legacy code as
+          well. There is much more to the await keyword, and I encourage you to
+          look into it by going through the references section. That's all for
+          this section, I hope you learned a lot, let's move on to the last
+          section!
+        </p>
+      </div>
+      <div class="page-nav-container">
+        <button id="next" class="page-nav-button next">
+          Next Section &rarr;
+        </button>
+        <button id="prev" class="page-nav-button prev">
+          Previous Section &larr;
+        </button>
+        <script src="../js/nextpage_listener.js"></script>
+      </div>
+      <div id="topic-dropdown" class="right-panel">
+        <script src="../js/createDropdown.js"></script>
+        <script src="../js/topiclink_listener.js"></script>
+      </div>
+    </div>
+    <footer class="resource-footer">
+      <div>
+        <h3>References</h3>
+        <ul>
+          <li>
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+              target="_blank"
+              >Mozilla Docs: Promises</a
+            >
+          </li>
+          <a href="https://javascript.info/async-await" target="_blank">
+            JavaScript.info: Async/await
+          </a>
+          <li></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+<!-- 
+
+-->
